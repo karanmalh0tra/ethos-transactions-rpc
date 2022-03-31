@@ -14,7 +14,7 @@ func init() {
 
 func GetBalanceReply(balance float64) (MyRpcProcedure) {
 
-        log.Printf("myRpcClient: Received Balance Reply: %v\n", balance)
+        log.Printf("myRpcClient: Received Balance Reply for Account: %v\n", balance)
         return nil
 
 }
@@ -29,7 +29,7 @@ func transferReply(status bool) (MyRpcProcedure) {
 func main() {
         altEthos.LogToDirectory("test/myRpcClient")
         log.Printf("myRpcClient: before call\n")
-	for i := 1; i < 5; i++ {
+	for i := 0; i < 5; i++ {
                 fd, status := altEthos.IpcRepeat("MyRpc","",nil)
                 if status != syscall.StatusOk {
                         log.Printf("Ipc failed: %v\n", status)

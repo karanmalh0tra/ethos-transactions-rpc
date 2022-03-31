@@ -60,7 +60,8 @@ func transfer (from uint64, to uint64, amount float64 ) (MyRpcProcedure) {
         log.Printf("myRpcService: transfer successful from %v to %v \n", from, to)
         fromAccount = readCounterVal(from)
         toAccount = readCounterVal(to)
-        log.Printf("myRpcService: final amounts %v to %v \n", fromAccount.Amount, toAccount.Amount)
+	log.Printf("RpcServer: Amount %v Transfered from Account ID %v to Account ID %v \n", amount, from, to)
+        log.Printf("RpcServer: From Account ID Balance is %v and To Account ID Balance is %v \n", fromAccount.Amount, toAccount.Amount)
         return &MyRpctransferReply {true}
 
 }
@@ -78,6 +79,10 @@ func main () {
         }
 
         data := MyType {100}
+	data1 := MyType {150}
+	data2 := MyType {200}
+	data3 := MyType {250}
+	data4 := MyType {300}
 
         status = altEthos.DirectoryCreate(path, &data, "boh")
 
@@ -85,10 +90,10 @@ func main () {
                 log.Fatalf("Error creating directory %v because %v\n", path, status)
         }
         writeCounterVal(data, 0);
-        writeCounterVal(data, 1);
-        writeCounterVal(data, 2);
-        writeCounterVal(data, 3);
-        writeCounterVal(data, 4);
+        writeCounterVal(data1, 1);
+        writeCounterVal(data2, 2);
+        writeCounterVal(data3, 3);
+        writeCounterVal(data4, 4);
 
         for {
 
