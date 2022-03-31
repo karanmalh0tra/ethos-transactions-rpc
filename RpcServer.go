@@ -13,7 +13,7 @@ var path = "/user/" + syscall.GetUser() + "/accounts"
 func init () {
 
         SetupMyRpcGetBalance(GetBalance)
-        SetupMyRpctransfer(transfer)
+        SetupMyRpcTransfer(Transfer)
 
 }
 
@@ -24,7 +24,7 @@ func readCounterVal(accountId uint64) MyType {
         if status != syscall.StatusOk {
                 log.Fatalf("Error_writing_%v_%v\n", path, status)
         }
-        log.Printf("Val_%v\n", readData)
+        log.Printf("Val %v\n", readData)
         return readData
 }
 
@@ -38,31 +38,32 @@ func writeCounterVal(data MyType, accountId uint64) {
 
 func GetBalance (accountId uint64) (MyRpcProcedure) {
          counterVal := readCounterVal(accountId)
-         log.Printf("myRpcService: called increment \n")
+         //log.Printf("myRpcServer: called increment \n")
          writeCounterVal(counterVal, accountId)
-         log.Printf("myRpcService: called with account id %v \n", accountId)
+         log.Printf("myRpcServer: called with account id %v \n", accountId)
          return &MyRpcGetBalanceReply {counterVal.Amount}
 
 }
 
 
-func transfer (from uint64, to uint64, amount float64 ) (MyRpcProcedure) {
+func Transfer (from uint64, to uint64, amount float64 ) (MyRpcProcedure) {
         fromAccount := readCounterVal(from)
         toAccount := readCounterVal(to)
         if fromAccount.Amount < amount {
-                return &MyRpctransferReply {false}
+		log.Printf("RpcServer: Sender doesnt have enough balance.")
+                return &MyRpcTransferReply {false}
         }
-        log.Printf("myRpcService: called transfer \n")
+        log.Printf("RpcServer: Initiating Transfer \n")
         fromAccount.Amount -= amount
         toAccount.Amount += amount
         writeCounterVal(fromAccount, from)
         writeCounterVal(toAccount, to)
-        log.Printf("myRpcService: transfer successful from %v to %v \n", from, to)
+        log.Printf("RpcServer: Transfer successful from %v to %v \n", from, to)
         fromAccount = readCounterVal(from)
         toAccount = readCounterVal(to)
 	log.Printf("RpcServer: Amount %v Transfered from Account ID %v to Account ID %v \n", amount, from, to)
         log.Printf("RpcServer: From Account ID Balance is %v and To Account ID Balance is %v \n", fromAccount.Amount, toAccount.Amount)
-        return &MyRpctransferReply {true}
+        return &MyRpcTransferReply {true}
 
 }
 
@@ -87,7 +88,7 @@ func main () {
         status = altEthos.DirectoryCreate(path, &data, "boh")
 
         if status != syscall.StatusOk {
-                log.Fatalf("Error creating directory %v because %v\n", path, status)
+                log.Fatalf("RpcServer: Error creating directory %v because %v\n", path, status)
         }
         writeCounterVal(data, 0);
         writeCounterVal(data1, 1);
@@ -99,7 +100,7 @@ func main () {
 
                 _, fd, status := altEthos.Import(listeningFd)
                 if status != syscall.StatusOk {
-                        log.Printf(" Error calling Import: %v\n", status)
+                        log.Printf("RpcServer: Error calling Import: %v\n", status)
                         altEthos.Exit(status)
                         }
                 log.Printf("my RpcService: new connection accepted \n")
