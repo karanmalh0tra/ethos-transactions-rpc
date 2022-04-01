@@ -36,6 +36,7 @@ func main() {
                         altEthos.Exit(status)
 
                 }
+		// call to get Balance of each User
                 call := MyRpcGetBalance{uint64(i)}
                 status = altEthos.ClientCall(fd, &call)
 
@@ -53,7 +54,7 @@ func main() {
 
         }
 
-
+	// call to show what happens if you try to transfer more than balance
 	call := MyRpcTransfer{uint64(0), uint64(1), 150}
 	status = altEthos.ClientCall(fd, &call)
 	if status != syscall.StatusOk {
@@ -67,7 +68,8 @@ func main() {
 		log.Printf("Ipc failed: %v\n", status1)
 		altEthos.Exit(status1)
 	}
-
+	
+	// call to show a successful transfer
         call1 := MyRpcTransfer{uint64(0), uint64(1), 75}
         status1 = altEthos.ClientCall(fd1, &call1)
 
