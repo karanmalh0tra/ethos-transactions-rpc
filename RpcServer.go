@@ -38,8 +38,6 @@ func writeCounterVal(data MyType, accountId uint64) {
 
 func GetBalance (accountId uint64) (MyRpcProcedure) {
          counterVal := readCounterVal(accountId)
-         //log.Printf("myRpcServer: called increment \n")
-         writeCounterVal(counterVal, accountId)
          log.Printf("myRpcServer: called with account id %v \n", accountId)
          return &MyRpcGetBalanceReply {counterVal.Amount}
 
